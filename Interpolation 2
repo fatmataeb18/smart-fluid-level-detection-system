@@ -1,0 +1,96 @@
+import numpy as np 
+import pandas as pd 
+import matplotlib.pyplot as plt 
+
+"""
+Xs= [8.1 , 8.3 , 8.6 , 8.7 ]
+Ys= [16.94410 , 17.56492 , 18.50515 , 18.82091]
+Xs= [21, 18, 9 ,  2 ]
+Ys= [0, 0.6, 2.4 , 4.2]
+Xs = [1, 2, 3, 4]
+Ys = [1, 4, 9, 16]   # x^2
+
+
+"""
+
+Xs= [23, 19, 15, 6.5 ]
+Ys= [0, 1.2, 2.4, 4.8]
+
+m =input (" ")
+degree = int( input("input the degree of polonomial (1 , 2 , 3 , ....) : "))
+print("\n")
+# if the degree of polynomial is 3 we need 4 points
+
+# # Input Loop
+# for i in range (degree + 1):
+#     current_x = float(input(f"Enter Distance (X) : "))
+#     Xs.append(current_x)
+#     current_y= float(input(f"Enter Volume >> f(x): "))
+#     Ys.append(current_y)
+# print("\n")
+
+
+FinalDist = float(input(f">>> Enter distance Of the Needed Volume : "))
+
+
+def lagrange_interpolation (X):
+   
+    multiplication = 0
+    for i in range (degree + 1):
+        L = 1
+        for j in range(degree + 1 ):
+            if (i != j):
+                L *= ( (X-Xs[j]) / (Xs[i]-Xs[j]) )
+                
+        multiplication += ( Ys[i] * L) 
+    
+    return multiplication
+
+
+def show_function(X):
+    x_axis = np.linspace(min(Xs)-1, max(Xs)+1, 400)
+    y_axis = [lagrange_interpolation(x) for x in x_axis]
+    Y = lagrange_interpolation(X)
+    plt.figure(figsize=(8,5))
+    plt.plot(x_axis, y_axis, label='f(x)')
+    plt.scatter(Xs, Ys, color='red', label='Given Points')
+    plt.scatter([X], [Y], color='green', s=90, label=f'Interpolated Point ({X}, {round(Y,4)})')
+    plt.axvline(X, linestyle='--', color='green')  # خط رأسي
+    plt.axhline(Y, linestyle='--', color='green')  # خط افقي
+    plt.text(min(x_axis), Y, f"  f({X}) = {round(Y, 5)}", color='green')
+    plt.title("Lagrange Interpolation Graph \n Smart Feul Detection")
+    plt.xlabel("x")
+    plt.ylabel("f(x)")
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
+
+Result =round(lagrange_interpolation(FinalDist) ,3)
+print("Result =  " , Result)
+print("\n")
+
+def pandas_part():
+    pandas_dict_data = {
+        "distance": Xs,
+        "Volume": Ys
+    }
+    df = pd.DataFrame(pandas_dict_data)
+    df["Set"] = "Training"
+    test_rows = pd.DataFrame({
+        "distance": [FinalDist], 
+        "Volume": [Result],
+        "Set": ["Test"]
+    })
+    df = pd.concat([df, test_rows], ignore_index=True)
+    print(df)
+    
+    
+    
+pandas_part()
+show_function(FinalDist)
+
+
+
+
+
